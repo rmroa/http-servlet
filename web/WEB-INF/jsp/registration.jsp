@@ -1,0 +1,53 @@
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<html>
+<head>
+    <title>Title</title>
+</head>
+<body>
+    <img src="${pageContext.request.contextPath}/images/users/girl.jpg" alt="User image">
+
+    <form action="${pageContext.request.contextPath}/registration" method="post" enctype="multipart/form-data">
+        <label for="name">Name:
+            <input type="text" name="name" id="name">
+        </label><br>
+        <label for="lastName">Surname:
+            <input type="text" name="lastName" id="lastName">
+        </label><br>
+        <label for="birthday">Birthday:
+            <input type="date" name="birthday" id="birthday">
+        </label><br>
+        <label for="imageId">Image:
+            <input type="file" name="image" id="imageId">
+        </label><br>
+        <label for="country">Country:
+            <input type="text" name="country" id="country">
+        </label><br>
+        <label for="city">City:
+            <input type="text" name="city" id="city">
+        </label><br>
+        <label for="phone">Phone:
+            <input type="text" name="phone" id="phone">
+        </label><br>
+        <label for="email">Email:
+            <input type="text" name="email" id="email">
+        </label><br>
+        <label for="password">Password:
+            <input type="password" name="password" id="password">
+        </label><br>
+        <c:forEach var="gender" items="${requestScope.genders}">
+            <label>
+                <input type="radio" name="gender" value="${gender}">
+            </label> ${gender}<br>
+        </c:forEach>
+        <button type="submit">Send</button>
+        <c:if test="${not empty requestScope.errors}">
+            <div style="color: red">
+                <c:forEach var="error" items="${requestScope.errors}">
+                    <span>${error.message}</span>
+                </c:forEach>
+            </div>
+        </c:if>
+    </form>
+</body>
+</html>

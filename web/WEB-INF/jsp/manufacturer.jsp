@@ -6,6 +6,7 @@
     <title>Title</title>
 </head>
 <body>
+    <%@include file="header.jsp"%>
     <h1>Manufacturer:</h1>
     <ul>
         <c:forEach var="manufacturer" items="${requestScope.manufacturers}">

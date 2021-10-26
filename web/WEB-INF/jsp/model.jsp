@@ -6,6 +6,7 @@
     <title>Title</title>
 </head>
 <body>
+    <%@include file="header.jsp"%>
     <h1>Models:</h1>
     <ul>
         <c:forEach var="model" items="${requestScope.models}">

@@ -31,7 +31,7 @@ public class RegistrationServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        CreateUserDto customerDto = CreateUserDto.builder()
+        CreateUserDto createUserDto = CreateUserDto.builder()
                 .firstName(req.getParameter("name"))
                 .lastName(req.getParameter("lastName"))
                 .birthday(req.getParameter("birthday"))
@@ -45,7 +45,7 @@ public class RegistrationServlet extends HttpServlet {
                 .build();
 
         try {
-            userService.create(customerDto);
+            userService.create(createUserDto);
             resp.sendRedirect("/login");
         } catch (ValidationException exception) {
             req.setAttribute("errors", exception.getErrors());

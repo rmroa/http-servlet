@@ -1,5 +1,7 @@
 package com.rm.http.dao;
 
+import com.rm.http.entity.Gender;
+import com.rm.http.entity.Role;
 import com.rm.http.entity.User;
 import com.rm.http.util.ConnectionManager;
 import lombok.NoArgsConstructor;
@@ -8,6 +10,7 @@ import lombok.SneakyThrows;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +24,20 @@ public class UserDao implements Dao<Long, User> {
     private static final String SAVE_SQL = "" +
             "INSERT INTO users (first_name, last_name, birthday, image, country, city, phone, email, password, gender) " +
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String FIND_BY_EMAIL_AND_PASSWORD = "" +
+            "SELECT id, " +
+            "first_name, " +
+            "last_name, " +
+            "birthday, " +
+            "image, country, " +
+            "city, " +
+            "phone, " +
+            "email, " +
+            "password, " +
+            "role, " +
+            "gender " +
+            "FROM users " +
+            "WHERE email = ? AND password = ?";
 
     public static UserDao getInstance() {
         return INSTANCE;
@@ -29,6 +46,22 @@ public class UserDao implements Dao<Long, User> {
     @Override
     public List<User> findAll() {
         return null;
+    }
+
+    @SneakyThrows
+    public Optional<User> findByEmailAndPassword(String email, String password) {
+        try (Connection connection = ConnectionManager.get();
+             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_EMAIL_AND_PASSWORD)) {
+            preparedStatement.setString(1, email);
+            preparedStatement.setString(2, password);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            User user = null;
+            if (resultSet.next()) {
+                user = buildUser(resultSet);
+            }
+            return Optional.ofNullable(user);
+        }
     }
 
     @Override
@@ -67,5 +100,22 @@ public class UserDao implements Dao<Long, User> {
     @Override
     public boolean delete() {
         return false;
+    }
+
+    private User buildUser(ResultSet resultSet) throws SQLException {
+        return User.builder()
+                .id(resultSet.getLong("id"))
+                .firstName(resultSet.getString("first_name"))
+                .lastName(resultSet.getString("last_name"))
+                .birthday(resultSet.getDate("birthday").toLocalDate())
+                .image(resultSet.getString("image"))
+                .country(resultSet.getString("country"))
+                .city(resultSet.getString("city"))
+                .phone(resultSet.getString("phone"))
+                .email(resultSet.getString("email"))
+                .password(resultSet.getString("password"))
+                .role(Role.valueOf(resultSet.getString("role")))
+                .gender(Gender.valueOf(resultSet.getString("gender")))
+                .build();
     }
 }
